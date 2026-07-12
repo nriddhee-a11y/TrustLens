@@ -1,5 +1,22 @@
 import "./globals.css";
 import { Providers } from "./providers";
+import { Space_Grotesk, Inter, JetBrains_Mono } from "next/font/google";
+
+const display = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500", "700"],
+  variable: "--font-display",
+});
+const body = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-body",
+});
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-mono",
+});
 
 export const metadata = {
   title: "TrustLens — Can you trust it?",
@@ -12,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-base min-h-screen font-sans">
+    <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
+      <body className="bg-base min-h-screen font-sans text-ink">
         <Providers>{children}</Providers>
       </body>
     </html>
