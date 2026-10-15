@@ -1,4 +1,58 @@
-# TrustLens — Setup Runbook (no coding needed)
+# TrustLens
+
+**Don't ask if it's fake. Ask if you can trust it.**
+
+TrustLens is an explainable deepfake and synthetic-media detector for images, video and audio.
+Built for **Prompt Wars × HackWIE (IEEE Day 2026, IEEE WIE MSIT)** under
+**Challenge 02 — Open Innovation** (AI, software, automation and emerging technologies).
+
+Live demo: https://trust-lens-zeta.vercel.app
+
+## The real-world problem
+Synthetic media is now cheap to make and hard to verify. Everyday people, students,
+journalists and small organisations regularly receive images, videos and voice notes
+they cannot check before trusting or forwarding them.
+
+Most detection tools return a bare "real" or "fake" label. With no reasons given, a
+verdict is hard to trust, hard to challenge, and impossible to hand to someone else
+as evidence.
+
+## Our original solution
+TrustLens shows its work:
+- **Trust Score (0-100)** with a colour *and* text verdict (Trusted / Use Caution / Manipulated)
+- **"Why?" Evidence Panel** — flagged findings, confidence bars, metadata analysis, source check
+- **Evidence Locker** — SHA-256 file fingerprint plus a downloadable JSON verification report
+- **Scan history** that updates live
+- Works on **images, video and audio**
+
+## Working prototype status (honest scope)
+Everything above is working end-to-end. Without a detection API key the app runs in a
+clearly labelled **demo mode**: file hashing, structured findings and the report are real,
+but the "is it fake" score is simulated and the UI says so. Setting `HIVE_API_KEY`
+switches `convex/analysis.ts` to live detection (see the last section).
+
+## Tech stack
+Next.js 14 · React 18 · TypeScript · Tailwind CSS · Convex (database, storage, auth, background actions) · Vitest
+
+## Testing
+```
+npm test          # run the unit + component tests once
+npm run test:watch
+npm run typecheck
+```
+Tests cover the trust-score/verdict boundaries, finding generation, demo-analysis
+determinism, report generation, and the accessibility labelling of the score badge
+and evidence panel. The scoring logic lives in `convex/lib/scoring.ts`.
+
+## Accessibility
+Skip-to-content link, visible focus states, keyboard-operable upload control, labelled
+form fields, `role="alert"` errors, live status regions, alt text / labels on uploaded
+media, ARIA progress bars, verdicts that never rely on colour alone, higher-contrast
+secondary text, and `prefers-reduced-motion` support.
+
+---
+
+## Setup Runbook (no coding needed)
 
 This app is fully built. You just need to install a few free tools and run
 a couple of commands. Follow this in order.

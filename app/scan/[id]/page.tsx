@@ -3,17 +3,19 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
+import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { TrustScoreBadge } from "@/app/components/TrustScoreBadge";
 import { EvidencePanel } from "@/app/components/EvidencePanel";
 import { Authenticated, Unauthenticated, AuthLoading } from "convex/react";
 import { useEffect } from "react";
+import { buildReport } from "@/convex/lib/scoring";
 
 export default function ScanPage() {
   return (
     <>
       <AuthLoading>
-        <div className="min-h-screen flex items-center justify-center text-neutral-500 text-sm">
+        <div role="status" className="min-h-screen flex items-center justify-center text-neutral-400 text-sm">
           Loading...
         </div>
       </AuthLoading>
@@ -31,7 +33,7 @@ function RedirectToLogin() {
   const router = useRouter();
   useEffect(() => {
     router.replace("/login");
-  }, []);
+  }, [router]);
   return null;
 }
 
@@ -42,7 +44,7 @@ function ScanContent() {
 
   if (scan === undefined) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-neutral-500 text-sm">
+      <div role="status" className="min-h-screen flex items-center justify-center text-neutral-400 text-sm">
         Loading...
       </div>
     );
@@ -50,22 +52,14 @@ function ScanContent() {
 
   if (scan === null) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-neutral-500 text-sm">
+      <div className="min-h-screen flex items-center justify-center text-neutral-400 text-sm">
         Scan not found.
       </div>
     );
   }
 
   function downloadReport() {
-    const report = {
-      trustScore: scan!.trustScore,
-      verdict: scan!.verdict,
-      analyzedAt: new Date(scan!.createdAt).toISOString(),
-      fileName: scan!.fileName,
-      fileHash: scan!.fileHash,
-      summary: scan!.summary,
-      findings: scan!.evidence?.findings ?? [],
-    };
+    const report = buildReport(scan!);
     const blob = new Blob([JSON.stringify(report, null, 2)], {
       type: "application/json",
     });
@@ -79,12 +73,12 @@ function ScanContent() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-10">
-      <a
+      <Link
         href="/dashboard"
-        className="text-xs text-neutral-500 hover:text-white"
+        className="text-xs text-neutral-400 hover:text-white"
       >
-        ← Back to dashboard
-      </a>
+        <span aria-hidden="true">← </span>Back to dashboard
+      </Link>
 
       <div className="flex items-center justify-between mt-4 mb-6">
         <h1 className="text-xl font-bold truncate pr-4">{scan.fileName}</h1>
@@ -94,19 +88,33 @@ function ScanContent() {
       {scan.fileUrl && (
         <div className="bg-panel border border-border rounded-xl overflow-hidden mb-6">
           {scan.mediaType === "image" && (
-            <img src={scan.fileUrl} className="w-full max-h-[420px] object-contain bg-black" />
+            <img src={scan.fileUrl} alt={`Uploaded image: ${scan.fileName}`} className="w-full max-h-[420px] object-contain bg-black" />
           )}
           {scan.mediaType === "video" && (
-            <video src={scan.fileUrl} controls className="w-full max-h-[420px]" />
+            <video
+              src={scan.fileUrl}
+              controls
+              aria-label={`Uploaded video: ${scan.fileName}`}
+              className="w-full max-h-[420px]"
+            />
           )}
           {scan.mediaType === "audio" && (
-            <audio src={scan.fileUrl} controls className="w-full p-4" />
+            <audio
+              src={scan.fileUrl}
+              controls
+              aria-label={`Uploaded audio: ${scan.fileName}`}
+              className="w-full p-4"
+            />
           )}
         </div>
       )}
 
       {scan.status !== "complete" ? (
-        <div className="bg-panel border border-border rounded-xl p-6 text-center text-neutral-400 text-sm">
+        <div
+          role="status"
+          aria-live="polite"
+          className="bg-panel border border-border rounded-xl p-6 text-center text-neutral-400 text-sm"
+        >
           {scan.status === "failed"
             ? scan.summary ?? "Analysis failed."
             : "Analyzing... this updates automatically when done."}
@@ -119,7 +127,7 @@ function ScanContent() {
             </h2>
             <p className="text-sm text-neutral-400">{scan.summary}</p>
             {scan.fileHash && (
-              <p className="text-xs text-neutral-600 mt-3 font-mono break-all">
+              <p className="text-xs text-neutral-400 mt-3 font-mono break-all">
                 SHA-256: {scan.fileHash}
               </p>
             )}

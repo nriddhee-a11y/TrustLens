@@ -31,7 +31,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${body.variable} ${mono.variable}`}>
       <body className="bg-base min-h-screen font-sans text-ink">
-        <Providers>{children}</Providers>
+        <a href="#main" className="skip-link">
+          Skip to main content
+        </a>
+        <Providers>
+          <main id="main">{children}</main>
+        </Providers>
       </body>
     </html>
   );

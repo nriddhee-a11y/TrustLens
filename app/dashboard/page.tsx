@@ -13,7 +13,7 @@ export default function DashboardPage() {
   return (
     <>
       <AuthLoading>
-        <div className="min-h-screen flex items-center justify-center text-neutral-500 text-sm">
+        <div role="status" className="min-h-screen flex items-center justify-center text-neutral-400 text-sm">
           Loading...
         </div>
       </AuthLoading>
@@ -31,7 +31,7 @@ function RedirectToLogin() {
   const router = useRouter();
   useEffect(() => {
     router.replace("/login");
-  }, []);
+  }, [router]);
   return null;
 }
 
@@ -51,7 +51,7 @@ function DashboardContent() {
             await signOut();
             router.push("/login");
           }}
-          className="text-xs text-neutral-500 hover:text-white"
+          className="text-xs text-neutral-400 hover:text-white"
         >
           Sign out
         </button>
@@ -64,12 +64,12 @@ function DashboardContent() {
       <h2 className="text-sm font-semibold text-neutral-400 mb-3">
         Scan History
       </h2>
-      <div className="space-y-3">
+      <div className="space-y-3" aria-live="polite">
         {scans === undefined && (
-          <p className="text-neutral-600 text-sm">Loading...</p>
+          <p className="text-neutral-400 text-sm">Loading...</p>
         )}
         {scans?.length === 0 && (
-          <p className="text-neutral-600 text-sm">
+          <p className="text-neutral-400 text-sm">
             No scans yet. Upload a file above to get started.
           </p>
         )}
