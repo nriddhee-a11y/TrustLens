@@ -10,8 +10,8 @@ export function ScanCard({ scan }: { scan: any }) {
       className="flex items-center justify-between bg-panel border border-border rounded-xl px-5 py-4 hover:border-accent/50 transition"
     >
       <div>
-        <p className="font-medium">{scan.fileName}</p>
-        <p className="text-xs text-neutral-500 mt-1">
+        <p className="font-medium break-all">{scan.fileName}</p>
+        <p className="text-xs text-neutral-400 mt-1">
           {scan.mediaType.toUpperCase()} ·{" "}
           {new Date(scan.createdAt).toLocaleString()}
         </p>

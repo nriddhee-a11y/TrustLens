@@ -26,7 +26,10 @@ export function TrustScoreBadge({
 
   if (!verdict) {
     return (
-      <span className="text-xs text-neutral-500 border border-border rounded-full px-3 py-1">
+      <span
+        role="status"
+        className="text-xs text-neutral-400 border border-border rounded-full px-3 py-1"
+      >
         Analyzing...
       </span>
     );
@@ -34,6 +37,8 @@ export function TrustScoreBadge({
 
   return (
     <span
+      role="status"
+      aria-label={`Trust score ${score !== undefined ? `${score} out of 100, ` : ""}verdict: ${labels[verdict]}`}
       className={`inline-flex items-center gap-2 rounded-full border font-medium ${colors[verdict]} ${sizes[size]}`}
     >
       {score !== undefined ? `${score}/100` : ""} · {labels[verdict]}

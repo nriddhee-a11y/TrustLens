@@ -19,7 +19,7 @@ module.exports = {
         caution: "#F5A623",
         ink: "#F2F3F5",
         muted: "#9497A0",
-        faint: "#5B5D66",
+        faint: "#8A8D96",
         mint: "#34F5A0",
         mintDim: "#0F2A20",
         landing: "#080B0A",

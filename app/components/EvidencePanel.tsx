@@ -7,7 +7,7 @@ export function EvidencePanel({ evidence }: { evidence: any }) {
     <div className="bg-panel border border-border rounded-xl p-6 space-y-6">
       <div>
         <h3 className="text-sm font-semibold text-neutral-300 mb-3">
-          🔴 Flagged Findings
+          <span aria-hidden="true">🔴 </span>Flagged Findings
         </h3>
         <div className="space-y-3">
           {evidence.findings.map((f: any, i: number) => (
@@ -23,7 +23,14 @@ export function EvidencePanel({ evidence }: { evidence: any }) {
                   {f.confidence}% confidence
                 </span>
               </div>
-              <div className="w-full h-1.5 bg-border rounded-full overflow-hidden mb-2">
+              <div
+                role="progressbar"
+                aria-valuenow={f.confidence}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-label={`${f.type.replaceAll("_", " ")} confidence`}
+                className="w-full h-1.5 bg-border rounded-full overflow-hidden mb-2"
+              >
                 <div
                   className="h-full bg-accent"
                   style={{ width: `${f.confidence}%` }}
@@ -37,16 +44,16 @@ export function EvidencePanel({ evidence }: { evidence: any }) {
 
       <div>
         <h3 className="text-sm font-semibold text-neutral-300 mb-2">
-          📄 Metadata Analysis
+          <span aria-hidden="true">📄 </span>Metadata Analysis
         </h3>
-        <pre className="text-xs text-neutral-500 bg-panel2 rounded-lg p-3 overflow-x-auto">
+        <pre tabIndex={0} aria-label="Raw metadata" className="text-xs text-neutral-400 bg-panel2 rounded-lg p-3 overflow-x-auto">
           {JSON.stringify(evidence.metadata, null, 2)}
         </pre>
       </div>
 
       <div>
         <h3 className="text-sm font-semibold text-neutral-300 mb-2">
-          🌐 Source Verification
+          <span aria-hidden="true">🌐 </span>Source Verification
         </h3>
         <p className="text-sm text-neutral-400">
           {evidence.sourceVerification.replaceAll("_", " ")}

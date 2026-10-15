@@ -31,7 +31,7 @@ export default function LoginPage() {
             Trust<span className="text-accent">Lens</span>
           </h1>
           <p className="text-neutral-400 text-sm mt-2">
-            Not just "is it fake?" — can you trust it?
+            Not just &quot;is it fake?&quot; — can you trust it?
           </p>
         </div>
 
@@ -40,27 +40,38 @@ export default function LoginPage() {
           className="bg-panel border border-border rounded-xl p-6 space-y-4"
         >
           <div>
-            <label className="text-xs text-neutral-400">Email</label>
+            <label htmlFor="email" className="text-xs text-neutral-300">
+              Email
+            </label>
             <input
+              id="email"
               type="email"
+              autoComplete="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full mt-1 bg-panel2 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent"
+              className="w-full mt-1 bg-panel2 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-accent"
             />
           </div>
           <div>
-            <label className="text-xs text-neutral-400">Password</label>
+            <label htmlFor="password" className="text-xs text-neutral-300">
+              Password
+            </label>
             <input
+              id="password"
               type="password"
+              autoComplete={flow === "signIn" ? "current-password" : "new-password"}
+              minLength={8}
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full mt-1 bg-panel2 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent"
+              className="w-full mt-1 bg-panel2 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-accent"
             />
           </div>
 
-          {error && <p className="text-warning text-xs">{error}</p>}
+          <p role="alert" aria-live="assertive" className="text-warning text-xs empty:hidden">
+            {error}
+          </p>
 
           <button
             type="submit"

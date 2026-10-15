@@ -5,6 +5,8 @@ import { api } from "@/convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
+const MAX_BYTES = 50 * 1024 * 1024; // 50 MB
+
 function detectMediaType(file: File): "image" | "video" | "audio" | null {
   if (file.type.startsWith("image/")) return "image";
   if (file.type.startsWith("video/")) return "video";
@@ -27,6 +29,10 @@ export function UploadForm() {
       setError("Please upload an image, video, or audio file.");
       return;
     }
+    if (file.size > MAX_BYTES) {
+      setError("That file is larger than 50 MB. Please choose a smaller file.");
+      return;
+    }
 
     setUploading(true);
     try {
@@ -36,6 +42,7 @@ export function UploadForm() {
         headers: { "Content-Type": file.type },
         body: file,
       });
+      if (!result.ok) throw new Error("Upload failed. Please try again.");
       const { storageId } = await result.json();
 
       const scanId = await createScan({
@@ -54,7 +61,10 @@ export function UploadForm() {
 
   return (
     <div>
-      <div
+      {/* A real <button> so the drop zone is reachable and usable by keyboard
+          and screen readers; drag-and-drop remains as an enhancement. */}
+      <button
+        type="button"
         onClick={() => inputRef.current?.click()}
         onDragOver={(e) => e.preventDefault()}
         onDrop={(e) => {
@@ -62,32 +72,44 @@ export function UploadForm() {
           const file = e.dataTransfer.files?.[0];
           if (file) handleFile(file);
         }}
-        className="border-2 border-dashed border-border hover:border-accent transition rounded-xl p-12 text-center cursor-pointer bg-panel"
+        disabled={uploading}
+        aria-describedby="upload-help"
+        className="w-full border-2 border-dashed border-border hover:border-accent focus-visible:border-accent transition rounded-xl p-12 text-center cursor-pointer bg-panel disabled:cursor-wait"
       >
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/*,video/*,audio/*"
-          className="hidden"
-          onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) handleFile(file);
-          }}
-        />
         {uploading ? (
-          <p className="text-accent text-sm">Uploading...</p>
+          <span role="status" className="text-accent text-sm">
+            Uploading...
+          </span>
         ) : (
           <>
-            <p className="text-white font-medium">
-              Drop a file here, or click to upload
-            </p>
-            <p className="text-neutral-500 text-sm mt-1">
-              Image, video, or audio
-            </p>
+            <span className="block text-white font-medium">
+              Drop a file here, or press to choose one
+            </span>
+            <span
+              id="upload-help"
+              className="block text-neutral-400 text-sm mt-1"
+            >
+              Image, video, or audio · up to 50 MB
+            </span>
           </>
         )}
-      </div>
-      {error && <p className="text-warning text-sm mt-2">{error}</p>}
+      </button>
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/*,video/*,audio/*"
+        className="sr-only"
+        tabIndex={-1}
+        aria-label="Choose an image, video, or audio file to scan"
+        onClick={(e) => e.stopPropagation()}
+        onChange={(e) => {
+        const file = e.target.files?.[0];
+        if (file) handleFile(file);
+        }}
+      />
+      <p role="alert" className="text-warning text-sm mt-2 empty:hidden">
+        {error}
+      </p>
     </div>
   );
 }
